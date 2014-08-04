@@ -22,6 +22,15 @@
 
 	curl example:
 	curl --upload-file nuxeo-DM.key.zip http://127.0.0.1:1337 -H "X-File-Name:nuxeo-DM.key.zip" -o "nuxeo-DM.pdf"
+
+	====================================================
+	ABOUT SECURITY
+	====================================================
+	No need for serious security, bcause we don't access any nuxeo server, or anything else. This
+	code just receives a .zip and returns a pdf.
+	To avoid unsollicited requests, we are using a token. So the caller must pass a "nuxeo-token"
+	header which must be the same as the one stored in the nuxeo-token.json file on node (just
+	near this main.js file).
 */
 var kDEBUG = true;
 var kAUTO_CLEANUP_TIMEOUT = 60000;
@@ -55,33 +64,55 @@ setTimeout(function() {
 	cleanupExtractionFolder(false, kAUTO_CLEANUP_TIMEOUT);
 }, kAUTO_CLEANUP_TIMEOUT);
 
-http.createServer(function(request,response){
+// Reading the security token, which must match the value
+// stored in nuxeo.conf in the keynote2pdf.nodejs.server.token key.
+var kTOKEN = "";
+try {
+	var tokenFile = fs.readFileSync(__dirname + '/nuxeo-token.json', {encoding:'utf8'});
+	kTOKEN = JSON.parse(tokenFile).token;
+} catch(e) {
+	console.log("Can't read the security token: Requests will fail with an authorization error.\n" + e);
+}
+
+http.createServer(function(request, response){
 	var theUid, destFolder, originalFileName,
-		destFile, destFileStream, infos;
+		destFile, destFileStream, infos, token;
 
-	response.writeHead(200);
+	if(request.url == "/just_checking") {
+		// Nothing more, we're alive
+		console.log("Wer'e alive, aren't we?");
+		returnTextResponse(200, "All is good", response);
+	} else {
+		// Our protection
+		token = request.headers['nuxeo-token'];
+		if(typeof token != "string" || token !== kTOKEN) {
+			response.writeHead(401);
+			response.end();
+			return;
+		}
 
-	theUid = uuid.v4();
-	destFolder = kCONVERSION_FOLDER_PATH + theUid + "/";
-	fs.mkdirSync(destFolder);
+		theUid = uuid.v4();
+		destFolder = kCONVERSION_FOLDER_PATH + theUid + "/";
+		fs.mkdirSync(destFolder);
 
-	originalFileName = request.headers['x-file-name'];
-	if(typeof originalFileName !== "string") {
-		originalFileName = ""
+		originalFileName = request.headers['x-file-name'];
+		if(typeof originalFileName !== "string") {
+			originalFileName = ""
+		}
+
+		destFile = destFolder + theUid + ".zip";
+		destFileStream = fs.createWriteStream(destFile);
+		request.pipe(destFileStream);
+
+		infos = {	uid: theUid,
+					folderPath: destFolder,
+					timeStamp: Date.now(),
+					done: false,
+					originalFileName: originalFileName,
+					pathToFileToHandle: destFile
+				};
+		gHandledDocs[theUid] = infos;
 	}
-
-	destFile = destFolder + theUid + ".zip";
-	destFileStream = fs.createWriteStream(destFile);
-	request.pipe(destFileStream);
-
-	infos = {	uid: theUid,
-				folderPath: destFolder,
-				timeStamp: Date.now(),
-				done: false,
-				originalFileName: originalFileName,
-				pathToFileToHandle: destFile
-			};
-	gHandledDocs[theUid] = infos;
  
  /*
 	var fileSize = request.headers['content-length'];
@@ -215,7 +246,7 @@ function doReturnThePDF(infos, response) {
 		}
 		else {
 			response.writeHead(200, { 'Content-Type': 'application/pdf',
-										'Content-Disposition': 'attachment; filename="' + infos.originalFileName + '"'
+									  'Content-Disposition': 'attachment; filename="' + infos.originalFileName + '"'
 									});
 			response.end(content, 'utf-8');
 			infos.done = true;
