@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-Vendor: Nuxeo
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Bundle-Version: 5.9.4
+Bundle-Name: nuxeo-nike-demo
+Nuxeo-Component: OSGI-INF/keynote-operations.xml,
+ OSGI-INF/zippedKeynote2PDF-contrib.xml
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: nuxeo-nike-demo
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+

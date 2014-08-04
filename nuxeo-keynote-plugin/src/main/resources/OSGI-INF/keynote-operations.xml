@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.keynote.operations">
+  <extension
+    target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+    point="operations" >
+
+      <operation class="org.nuxeo.keynote.ConvertZippedKeynoteToPDFOp" />
+      <operation class="org.nuxeo.nike.HandleZippedKeynoteinDocument" />
+
+   </extension>
+</component>

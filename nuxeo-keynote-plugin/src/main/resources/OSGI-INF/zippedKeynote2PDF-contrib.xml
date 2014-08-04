@@ -1,0 +1,52 @@
+<component name="org.nuxeo.keynote.converter">
+
+  <!--  Schemas and facets -->
+  <!-- WARNING: The name are used in ZippedKeynoteToPDFConstants -->
+  <require>org.nuxeo.ecm.core.CoreExtensions</require>
+  <require>org.nuxeo.ecm.core.schema.TypeService</require>
+     <!--  Schema KeynoteAsPDF -->
+   <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
+     <schema name="KeynoteAsPDF" src="schemas/KeynoteAsPDF.xsd" prefix="knpdf" />
+   </extension>
+     <!-- Append this schema to the File doc type -->
+   <extension target="org.nuxeo.ecm.core.schema.TypeService" point="doctype">
+     <doctype name="File" append="true">
+       <schema name="KeynoteAsPDF" />
+      </doctype>
+    </extension>
+     <!-- Facet ZippedKeynote -->
+  <extension
+    target="org.nuxeo.ecm.core.schema.TypeService"
+    point="doctype">
+    <facet name="ZippedKeynote" perDocumentQuery="true"/>
+  </extension>
+
+  <!-- The converter -->
+  <extension
+    target="org.nuxeo.ecm.core.convert.service.ConversionServiceImpl"
+    point="converter">
+
+    <converter name="zippedKeynoteToPDF" class="org.nuxeo.keynote.ZippedKeynoteToPDFConverter">
+      <parameters>
+        <parameter name="CommandLineName">zippedKeynoteToPDF</parameter>
+      </parameters>
+    </converter>
+
+  </extension>
+
+  <!--  The command line (curl) -->
+  <require>org.nuxeo.ecm.platform.commandline.executor.service.defaultContrib</require>
+  <extension
+    target="org.nuxeo.ecm.platform.commandline.executor.service.CommandLineExecutorComponent"
+    point="command">
+    
+    <command name="zippedKeynoteToPDF" enabled="true">
+      <commandLine>curl</commandLine>
+      <parameterString>--upload-file #{sourceFilePath} #{nodeServerUrl} -o #{targetFilePath}</parameterString>
+      <installationDirective>You need to install curl.</installationDirective>
+    </command>
+    
+  </extension>
+  
+</component>
+
