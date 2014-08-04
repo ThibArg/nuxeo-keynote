@@ -34,9 +34,6 @@ public class ZippedKeynoteToPDFUtils {
 
     public static final Log log = LogFactory.getLog(ZippedKeynoteToPDFUtils.class);
 
-    public static final String kNKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME = "keynote2pdf.nodejs.server.urlAndPort";
-    public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL = Framework.getProperty(kNKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME);
-
     public enum ZippedKeynoteStatus {
         UNKNOWN,
         IS_KEYNOTE,
@@ -96,29 +93,30 @@ public class ZippedKeynoteToPDFUtils {
         Blob resultPDF = null;
 
         if(isZippedKeynote()) {
-            // Don't move if there is no configuration
-            if(kKEYNOTE2PDF_NODEJS_SERVER_URL == null || kKEYNOTE2PDF_NODEJS_SERVER_URL.isEmpty()) {
-                //log.error("nodejs server url not defined. Check nuxeo.conf and the " + kNKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
-                throw new Exception("nodejs server url not defined. Check nuxeo.conf and the " + kNKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
-            } else {
-                ConversionService conversionService = Framework
-                        .getService(ConversionService.class);
+            ConversionService conversionService = Framework
+                    .getService(ConversionService.class);
 
-                BlobHolder source = new SimpleBlobHolder(blob);
+            BlobHolder source = new SimpleBlobHolder(blob);
 
-                Map<String, Serializable> parameters = new HashMap<String, Serializable>();
-                parameters.put("nodeServerUrl", kKEYNOTE2PDF_NODEJS_SERVER_URL);
-                parameters.put("targetFilePath", blob.getFilename() + ".pdf");
-
+            Map<String, Serializable> parameters = new HashMap<String, Serializable>();
+            String targetFileName = blob.getFilename() + ".pdf";
+            parameters.put("targetFileName", targetFileName);
+            try {
                 BlobHolder result = conversionService.convert("zippedKeynoteToPDF",
                         source, parameters);
+                if(result != null && result.getBlob() != null) {
+                    resultPDF = result.getBlob();
+                    resultPDF.setFilename(targetFileName);
+                    resultPDF.setMimeType("application/pdf");
+                }
 
-                resultPDF = result.getBlob();
+            } catch(Exception e) {
+                log.error("Conversion error", e);
             }
         } else {
             // Should return a generic PDF stating "not a keynote presentation"?
             // Or call the generic "anytopdf" converter?
-
+            // Or just leave the resultPDF null, so the caller handles it?
         }
 
         return resultPDF;

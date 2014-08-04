@@ -1,0 +1,34 @@
+<div xmlns:nxd="http://nuxeo.org/nxweb/document">
+
+<style>
+.knpdf_button {
+	height: 24px;
+	padding-left: 8px;
+	padding-right: 8px;
+	margin-left: : 5px;
+	font-size: smaller;
+}
+</style>
+
+<div>
+	<div class="buttonsGadget" style="margin-left:0px; display:inline-block">
+		<button id="knpdf_first" class="knpdf_button">First</button>
+		<button id="knpdf_prev" class="knpdf_button">Previous</button>
+		<button id="knpdf_next" class="knpdf_button">Next</button>
+		<button id="knpdf_last" class="knpdf_button">Last</button>
+	</div>
+	<span style="margin-left:20px">Page: <span id="page_num"></span>/<span id="knpdf_page_count"></span></span>
+</div>
+
+<div>
+	<canvas id="knpdf-canvas" style="border:1px  solid black; width:90%; height:90%"></canvas>
+</div>
+
+<script src="#{contextPath}/scripts/pdfjs/pdf.js" />
+<script src="#{contextPath}/scripts/keynoteAsPdfWithPdfJs.js" />
+<script type="text/javascript" charset="utf-8">
+jQuery(document).ready(function() {
+	displayPDF("#{currentDocument.id}", "#{contextPath}/scripts/pdfjs/pdf.worker.js", "knpdf-canvas");
+});
+</script>
+</div>
