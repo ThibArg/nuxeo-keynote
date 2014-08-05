@@ -1,7 +1,7 @@
 <component name="org.nuxeo.keynote.converter">
 
   <!--  Schemas and facets -->
-  <!-- WARNING: The name are used in ZippedKeynoteToPDFConstants -->
+  <!-- WARNING: The names are used in ZippedKeynoteToPDFConstants -->
   <require>org.nuxeo.ecm.core.CoreExtensions</require>
   <require>org.nuxeo.ecm.core.schema.TypeService</require>
      <!--  Schema KeynoteAsPDF -->

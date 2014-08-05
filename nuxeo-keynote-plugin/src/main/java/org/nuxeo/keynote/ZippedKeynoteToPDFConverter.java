@@ -52,11 +52,9 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
 
     //static boolean gNodeServerLooksAvailable = false;
 
-    public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME = "keynote2pdf.nodejs.server.urlAndPort";
-    public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL = Framework.getProperty(kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME);
+    public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL = Framework.getProperty(ZippedKeynoteToPDFConstants.kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME);
     // The token is optional: keynote2pdf.nodejs.server.token could be undefined and it's ok
-    public static final String KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME= "keynote2pdf.nodejs.server.token";
-    protected static String keynote2pdfServerToken = Framework.getProperty(KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME);
+    protected static String keynote2pdfServerToken = Framework.getProperty(ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME);
 
     /*  We wanted to check the availability once for all.
      *  But after all, it's ok for the distant Mac/nodejs server to be started later,
@@ -120,7 +118,7 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
         // Don't move if there is no configuration
         if(kKEYNOTE2PDF_NODEJS_SERVER_URL == null || kKEYNOTE2PDF_NODEJS_SERVER_URL.isEmpty()) {
             //log.error("nodejs server url not defined. Check nuxeo.conf and the " + kNKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
-            throw new ConversionException("Conversion will fail: nodejs server url is not defined. Check nuxeo.conf and the " + kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
+            throw new ConversionException("Conversion will fail: nodejs server url is not defined. Check nuxeo.conf and the " + ZippedKeynoteToPDFConstants.kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
         }
         // The token is optional
         if(keynote2pdfServerToken == null) {
