@@ -5,7 +5,7 @@ This [nuxeo](http://nuxeo.com) plug-in handles a zipped Keynote file, converts i
 
 * [Build](#build)
 * [Main Principles](#main-principles)
-* [Using the Plug-in: What You Have to Do](#using-the-plugin-what-you-have-to-do)
+* [Using the Plug-in: What You Have to Do](#using-the-plug-in-what-you-have-to-do)
 * [Handling Custom Document Types](#handling-custom-document-types)
 * [Trouble Shooting](#trouble-shooting)
 * [License](#license)
