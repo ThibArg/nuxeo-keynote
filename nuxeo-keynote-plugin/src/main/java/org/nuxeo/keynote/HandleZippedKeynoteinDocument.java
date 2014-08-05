@@ -70,7 +70,9 @@ public class HandleZippedKeynoteinDocument {
         boolean doIt;
 
         // We do nothing if we don't have the correct kind of document.
-        // We could return an error, but we are more generic-safe here
+        // We could return an error, but we are more generic here,
+        // avoiding an hassle to the caller (checking the schemas and
+        // calling us only if the document has the requested schemas)
         // (could log something, maybe)
         if(     input.isImmutable()
             || !input.hasSchema("file")

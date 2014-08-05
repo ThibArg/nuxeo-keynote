@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  *
  * Contributors:
- *     thibaud
+ *     thibaud (https://github.com/ThibArg)
  */
 
 package org.nuxeo.keynote;

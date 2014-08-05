@@ -42,7 +42,7 @@
     
     <command name="zippedKeynoteToPDF" enabled="true">
       <commandLine>curl</commandLine>
-      <parameterString>--upload-file #{sourceFilePath} #{nodeServerUrl} -H "nuxeo-token:#{headerToken}"  -o #{targetFilePath}</parameterString>
+      <parameterString>--upload-file #{sourceFilePath} #{nodeServerUrl} -H "kn2pdf-token:#{headerToken}"  -o #{targetFilePath}</parameterString>
       <installationDirective>You need to install curl.</installationDirective>
     </command>
     

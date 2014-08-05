@@ -54,10 +54,11 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
 
     public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME = "keynote2pdf.nodejs.server.urlAndPort";
     public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL = Framework.getProperty(kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME);
+    // The token is optional: keynote2pdf.nodejs.server.token could be undefined and it's ok
     public static final String KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME= "keynote2pdf.nodejs.server.token";
-    public static final String KEYNOTE2PDF_NODEJS_SERVER_TOKEN = Framework.getProperty(KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME);
+    protected static String keynote2pdfServerToken = Framework.getProperty(KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME);
 
-    /*  We wanted to check the avilability once for all.
+    /*  We wanted to check the availability once for all.
      *  But after all, it's ok for the distant Mac/nodejs server to be started later,
      *  so we comment this part.
      */
@@ -121,9 +122,9 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
             //log.error("nodejs server url not defined. Check nuxeo.conf and the " + kNKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
             throw new ConversionException("Conversion will fail: nodejs server url is not defined. Check nuxeo.conf and the " + kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
         }
-        if(KEYNOTE2PDF_NODEJS_SERVER_TOKEN == null || KEYNOTE2PDF_NODEJS_SERVER_TOKEN.isEmpty()) {
-            //log.error("nodejs server url not defined. Check nuxeo.conf and the " + KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME + " key.");
-            throw new ConversionException("Conversion will fail: nodejs server token is not defined. Check nuxeo.conf and the " + KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME + " key.");
+        // The token is optional
+        if(keynote2pdfServerToken == null) {
+            keynote2pdfServerToken = "";
         }
 
         Map<String, String> cmdStringParams = new HashMap<String, String>();
@@ -150,7 +151,7 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
                 outDir.getAbsolutePath() + System.getProperty("file.separator") + targetFileName);
 
         cmdStringParams.put("nodeServerUrl", kKEYNOTE2PDF_NODEJS_SERVER_URL);
-        cmdStringParams.put("headerToken", KEYNOTE2PDF_NODEJS_SERVER_TOKEN);
+        cmdStringParams.put("headerToken", keynote2pdfServerToken);
 
         return cmdStringParams;
     }

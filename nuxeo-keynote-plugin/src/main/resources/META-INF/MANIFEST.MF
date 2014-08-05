@@ -4,9 +4,9 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-Version: 5.9.4
 Bundle-Name: nuxeo-keynote
-Nuxeo-Component: OSGI-INF/keynote-operations.xml,
- OSGI-INF/zippedKeynote2PDF-contrib.xml
 Bundle-ManifestVersion: 2
+Nuxeo-Component: OSGI-INF/keynote-operations.xml,OSGI-INF/zippedKeynot
+ e2PDF-contrib.xml
 Bundle-SymbolicName: nuxeo-keynote
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

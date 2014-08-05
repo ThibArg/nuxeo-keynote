@@ -34,14 +34,12 @@ public class ZippedKeynoteToPDFUtils {
 
     public static final Log log = LogFactory.getLog(ZippedKeynoteToPDFUtils.class);
 
-    public enum ZippedKeynoteStatus {
-        UNKNOWN,
-        IS_KEYNOTE,
-        IS_NOT_KEYNOTE
-    }
+    protected static final int kSTATUS_UNKNOWN = 0;
+    protected static final int kSTATUS_KEYNOTE = 1;
+    protected static final int kSTATUS_NOT_KEYNOTE = -1;
 
     Blob blob = null;
-    ZippedKeynoteStatus status = ZippedKeynoteStatus.UNKNOWN;
+    int status = kSTATUS_UNKNOWN;
 
     public ZippedKeynoteToPDFUtils(Blob inBlob) {
         blob = inBlob;
@@ -49,11 +47,11 @@ public class ZippedKeynoteToPDFUtils {
 
     public boolean isZippedKeynote() throws Exception {
 
-        if(status != ZippedKeynoteStatus.UNKNOWN) {
-            return status == ZippedKeynoteStatus.IS_KEYNOTE;
+        if(status != kSTATUS_UNKNOWN) {
+            return status == kSTATUS_KEYNOTE;
         }
 
-        status = ZippedKeynoteStatus.IS_NOT_KEYNOTE;
+        status = kSTATUS_NOT_KEYNOTE;
         if( blob != null
          && blob.getMimeType().equalsIgnoreCase("application/zip")) {
             ZipInputStream zis = new ZipInputStream(blob.getStream());
@@ -76,15 +74,15 @@ public class ZippedKeynoteToPDFUtils {
                     if(zentry.isDirectory()
                          && name.endsWith(".key/")
                          && name.indexOf('/') == (name.length() - 1)) {
-                        status = ZippedKeynoteStatus.IS_KEYNOTE;
+                        status = kSTATUS_KEYNOTE;
                     }
                     zis.closeEntry();
                 }
-            } while(zentry != null && status == ZippedKeynoteStatus.IS_NOT_KEYNOTE);
+            } while(zentry != null && status == kSTATUS_NOT_KEYNOTE);
             zis.close();
         }
 
-        return status == ZippedKeynoteStatus.IS_KEYNOTE;
+        return status == kSTATUS_KEYNOTE;
     }
 
     /*
