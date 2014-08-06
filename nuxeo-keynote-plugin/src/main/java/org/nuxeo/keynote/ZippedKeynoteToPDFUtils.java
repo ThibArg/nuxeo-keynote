@@ -107,7 +107,6 @@ public class ZippedKeynoteToPDFUtils {
                     resultPDF.setFilename(targetFileName);
                     resultPDF.setMimeType("application/pdf");
                 }
-
             } catch(Exception e) {
                 log.error("Conversion error", e);
             }

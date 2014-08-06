@@ -52,22 +52,33 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
 
     //static boolean gNodeServerLooksAvailable = false;
 
-    public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL = Framework.getProperty(ZippedKeynoteToPDFConstants.kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME);
+    public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL = Framework.getProperty(ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME);
     // The token is optional: keynote2pdf.nodejs.server.token could be undefined and it's ok
     protected static String keynote2pdfServerToken = Framework.getProperty(ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME);
 
-    /*  We wanted to check the availability once for all.
+    protected static boolean configParamsAreOk = false;
+
+    /*  Check environment
+     *  We wanted to check the availability once for all.
      *  But after all, it's ok for the distant Mac/nodejs server to be started later,
      *  so we comment this part.
      */
-    /*
     public ZippedKeynoteToPDFConverter() throws Exception {
         super();
 
         if(kKEYNOTE2PDF_NODEJS_SERVER_URL == null || kKEYNOTE2PDF_NODEJS_SERVER_URL.isEmpty()) {
-            gNodeServerLooksAvailable = false;
-            log.error("Keynote to PDF conversions will fail: nodejs server url not defined. Check nuxeo.conf and the " + kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
+            log.error("Keynote to PDF conversions will fail: nodejs server url not defined. Check nuxeo.conf and the " + ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
         } else {
+            configParamsAreOk = true;
+        }
+
+        /*
+        *  We wanted to check the availability of the server once for all.
+        *  But after all, it's ok for the distant Mac/nodejs server to be started later,
+        *  so we comment this part.
+        */
+        /*
+        if(configParamsAreOk) {
             URL url = new URL( kKEYNOTE2PDF_NODEJS_SERVER_URL + "/just_checking" );
             HttpURLConnection httpConn =  (HttpURLConnection)url.openConnection();
             httpConn.setInstanceFollowRedirects( false );
@@ -79,8 +90,8 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
                 gNodeServerLooksAvailable = false;
             }
         }
+        */
     }
-    */
 
     @Override
     protected BlobHolder buildResult(List<String> cmdOutput, CmdParameters cmdParams) {
@@ -116,9 +127,8 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
             Map<String, Serializable> parameters) throws ConversionException {
 
         // Don't move if there is no configuration
-        if(kKEYNOTE2PDF_NODEJS_SERVER_URL == null || kKEYNOTE2PDF_NODEJS_SERVER_URL.isEmpty()) {
-            //log.error("nodejs server url not defined. Check nuxeo.conf and the " + kNKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
-            throw new ConversionException("Conversion will fail: nodejs server url is not defined. Check nuxeo.conf and the " + ZippedKeynoteToPDFConstants.kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
+        if(!configParamsAreOk) {
+            throw new ConversionException("nodejs server (used for conversion) url is not defined. Check nuxeo.conf and the " + ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
         }
         // The token is optional
         if(keynote2pdfServerToken == null) {

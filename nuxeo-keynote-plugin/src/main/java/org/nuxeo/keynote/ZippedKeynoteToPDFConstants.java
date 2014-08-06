@@ -30,7 +30,7 @@ public class ZippedKeynoteToPDFConstants {
 
     // Configuraiton to be set in nuxeo.conf
     //      -> The node.js server:port address to be used with curl
-    public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME = "keynote2pdf.nodejs.server.urlAndPort";
+    public static final String KEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME = "keynote2pdf.nodejs.server.urlAndPort";
     //      -> Optional: A token, if the node.js server requires one
     public static final String KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME= "keynote2pdf.nodejs.server.token";
 }
