@@ -130,9 +130,10 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
         if(!configParamsAreOk) {
             throw new ConversionException("nodejs server (used for conversion) url is not defined. Check nuxeo.conf and the " + ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
         }
-        // The token is optional
+        // The token is optional, but can't be null or "" for
+        // the CommandLineExecutor using curl to correctly parses it.
         if(keynote2pdfServerToken == null) {
-            keynote2pdfServerToken = "";
+            keynote2pdfServerToken = "ignore";
         }
 
         Map<String, String> cmdStringParams = new HashMap<String, String>();
