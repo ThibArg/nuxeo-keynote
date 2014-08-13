@@ -47,7 +47,7 @@ The plug-in provides operations, but no user action or event handler to call the
 
 ### Set up the NodeJS Conversion Server
 * Make sure you have the node.js conversion server up and running on a Mac with Keynote and that your nuxeo server can access to it.
-  * See explanations and code of the nodejs server [here](https://github.com/ThibArg/node-js-keynote-to-pdf)
+  * See explanations and code of the nodejs server [here](https://github.com/ThibArg/node-js-keynote2pdf)
 * Set up `nuxeo.conf` so it contains the node.je server address:port, and possibly the token (if the nodejs server expects a token). Something like:
 
   ```
