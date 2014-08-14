@@ -1,0 +1,7 @@
+{
+	"server"	: "localhost",
+	"port"		: "1337",
+	"cleanup_timeout" : 10000,
+	"max_lifespan" : 60000,
+	"debug"		: true
+}

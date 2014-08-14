@@ -53,8 +53,6 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
     //static boolean gNodeServerLooksAvailable = false;
 
     public static final String kKEYNOTE2PDF_NODEJS_SERVER_URL = Framework.getProperty(ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME);
-    // The token is optional: keynote2pdf.nodejs.server.token could be undefined and it's ok
-    protected static String keynote2pdfServerToken = Framework.getProperty(ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_TOKEN_NAME);
 
     protected static boolean configParamsAreOk = false;
 
@@ -130,11 +128,6 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
         if(!configParamsAreOk) {
             throw new ConversionException("nodejs server (used for conversion) url is not defined. Check nuxeo.conf and the " + ZippedKeynoteToPDFConstants.KEYNOTE2PDF_NODEJS_SERVER_URL_KEYNAME + " key.");
         }
-        // The token is optional, but can't be null or "" for
-        // the CommandLineExecutor using curl to correctly parses it.
-        if(keynote2pdfServerToken == null) {
-            keynote2pdfServerToken = "ignore";
-        }
 
         Map<String, String> cmdStringParams = new HashMap<String, String>();
 
@@ -160,7 +153,6 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
                 outDir.getAbsolutePath() + System.getProperty("file.separator") + targetFileName);
 
         cmdStringParams.put("nodeServerUrl", kKEYNOTE2PDF_NODEJS_SERVER_URL);
-        cmdStringParams.put("headerToken", keynote2pdfServerToken);
 
         return cmdStringParams;
     }
