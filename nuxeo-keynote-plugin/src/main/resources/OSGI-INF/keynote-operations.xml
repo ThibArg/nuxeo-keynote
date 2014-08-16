@@ -5,7 +5,7 @@
     point="operations" >
 
       <operation class="org.nuxeo.keynote.ConvertZippedKeynoteToPDFOp" />
-      <operation class="org.nuxeo.keynote.HandleZippedKeynoteinDocument" />
+      <operation class="org.nuxeo.keynote.HandleZippedKeynoteInDocumentOp" />
 
    </extension>
 </component>

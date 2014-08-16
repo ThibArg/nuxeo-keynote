@@ -1,0 +1,16 @@
+<component name="org.nuxeo.keynote.listener.contrib.ZippedKeynoteToPDFEventHandler">
+
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
+    point="listener">
+
+    <listener name="zippedkeynotetopdfeventhandler" async="true" postCommit="true"
+      class="org.nuxeo.keynote.ZippedKeynoteToPDFEventHandler" order="100">
+      <event>documentCreated</event>
+      <event>documentModified</event>
+      <filters>
+        <doctype>File</doctype>
+      </filters>
+    </listener>
+  </extension>
+
+</component>

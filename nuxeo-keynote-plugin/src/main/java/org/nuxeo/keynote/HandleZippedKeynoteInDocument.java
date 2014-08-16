@@ -18,15 +18,6 @@
 package org.nuxeo.keynote;
 
 import java.io.Serializable;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.automation.AutomationService;
-import org.nuxeo.ecm.automation.OperationContext;
-import org.nuxeo.ecm.automation.core.Constants;
-import org.nuxeo.ecm.automation.core.annotations.Context;
-import org.nuxeo.ecm.automation.core.annotations.Operation;
-import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
-import org.nuxeo.ecm.automation.core.collectors.DocumentModelCollector;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -48,25 +39,9 @@ import org.nuxeo.ecm.core.api.blobholder.BlobHolder;
  *      => Downloads a file named file(indice): file(1), then file(2), etc.
  *
  */
-@Operation(id=HandleZippedKeynoteinDocument.ID, category=Constants.CAT_DOCUMENT, label="Handle zipped Keynote in document", description="<p>Check if <code>file:content</code> is a zip file. If yes, check if it contains a .key file. If yes, convert this Keynote presentation to pdf, and stores the pdf in the <code>knpdf:content</code> field.</p>")
-public class HandleZippedKeynoteinDocument {
+public class HandleZippedKeynoteInDocument {
 
-    public static final String ID = "HandleZippedKeynoteInDocument";
-
-    public static final Log log = LogFactory.getLog(HandleZippedKeynoteinDocument.class);
-
-    @Context
-    protected OperationContext ctx;
-
-    @Context
-    protected CoreSession session;
-
-    @Context
-    AutomationService   as;
-
-    @OperationMethod(collector=DocumentModelCollector.class)
-    public DocumentModel run(DocumentModel input) throws Exception {
-
+    static DocumentModel run(DocumentModel inDoc, CoreSession inSession) throws Exception {
         boolean doIt;
 
         // We do nothing if we don't have the correct kind of document.
@@ -74,18 +49,18 @@ public class HandleZippedKeynoteinDocument {
         // avoiding an hassle to the caller (checking the schemas and
         // calling us only if the document has the requested schemas)
         // (could log something, maybe)
-        if(     input.isImmutable()
-            || !input.hasSchema("file")
-            || !input.hasSchema(ZippedKeynoteToPDFConstants.SCHEMA)) {
-            return input;
+        if(     inDoc.isImmutable()
+            || !inDoc.hasSchema("file")
+            || !inDoc.hasSchema(ZippedKeynoteToPDFConstants.SCHEMA)) {
+            return inDoc;
         }
 
         doIt = true;
 
         // Get the main blob
-        Blob zippedKeynoteBlob = (Blob) input.getPropertyValue("file:content");
+        Blob zippedKeynoteBlob = (Blob) inDoc.getPropertyValue("file:content");
         if (zippedKeynoteBlob == null) {
-            BlobHolder bh = input.getAdapter(BlobHolder.class);
+            BlobHolder bh = inDoc.getAdapter(BlobHolder.class);
             if (bh != null) {
                 zippedKeynoteBlob = bh.getBlob();
             }
@@ -115,12 +90,12 @@ public class HandleZippedKeynoteinDocument {
         //
         Blob resultPdf = null;
         if(zippedKeynoteBlob == null) {
-            if(!input.hasFacet(ZippedKeynoteToPDFConstants.FACET)) {
+            if(!inDoc.hasFacet(ZippedKeynoteToPDFConstants.FACET)) {
                 doIt = false; //return input;
             }
         } else {
             // Check if we already have a pdf for this .zip
-            String storedHash = (String) input.getPropertyValue(ZippedKeynoteToPDFConstants.XPATH_ZIP_HASH);
+            String storedHash = (String) inDoc.getPropertyValue(ZippedKeynoteToPDFConstants.XPATH_ZIP_HASH);
             if(storedHash != null && zippedKeynoteBlob.getDigest().equals(storedHash)) {
                 doIt = false; //return input;
             }
@@ -131,30 +106,30 @@ public class HandleZippedKeynoteinDocument {
             resultPdf = zkn2pdf.convert();
 
             if(resultPdf == null) {
-                input.removeFacet(ZippedKeynoteToPDFConstants.FACET);
-                input.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_FILENAME, null);
-                input.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_CONTENT, null);
+                inDoc.removeFacet(ZippedKeynoteToPDFConstants.FACET);
+                inDoc.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_FILENAME, null);
+                inDoc.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_CONTENT, null);
                 // If resultPdf is null, but we have a main blob, it just means it is
                 // not zipped-keynote (can be a zip with no Keynote inside, but also
                 // any other binary: pdf, docx, ...
                 if(zippedKeynoteBlob == null) {
-                    input.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_ZIP_HASH, null);
+                    inDoc.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_ZIP_HASH, null);
                 } else {
-                    input.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_ZIP_HASH, zippedKeynoteBlob.getDigest());
+                    inDoc.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_ZIP_HASH, zippedKeynoteBlob.getDigest());
                 }
             } else {
-                input.addFacet(ZippedKeynoteToPDFConstants.FACET);
+                inDoc.addFacet(ZippedKeynoteToPDFConstants.FACET);
                 // Put this blob in the KeynoteAsPDF schema
                 resultPdf.setFilename(zippedKeynoteBlob.getFilename() + ".pdf");
                 resultPdf.setMimeType("application/pdf");
-                input.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_FILENAME, zippedKeynoteBlob.getFilename() + ".pdf");
-                input.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_CONTENT, (Serializable) resultPdf);
-                input.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_ZIP_HASH, zippedKeynoteBlob.getDigest());
+                inDoc.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_FILENAME, zippedKeynoteBlob.getFilename() + ".pdf");
+                inDoc.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_CONTENT, (Serializable) resultPdf);
+                inDoc.setPropertyValue(ZippedKeynoteToPDFConstants.XPATH_ZIP_HASH, zippedKeynoteBlob.getDigest());
             }
-            input = session.saveDocument(input);
+
+            inDoc = inSession.saveDocument(inDoc);
         }
 
-        return input;
+        return inDoc;
     }
-
 }

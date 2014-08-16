@@ -5,8 +5,10 @@ Bundle-ClassPath: .
 Bundle-Version: 5.9.4
 Bundle-Name: nuxeo-keynote
 Bundle-ManifestVersion: 2
-Nuxeo-Component: OSGI-INF/keynote-operations.xml,OSGI-INF/zippedKeynot
- e2PDF-contrib.xml
+Nuxeo-Component: OSGI-INF/keynote-operations.xml,
+ OSGI-INF/zippedKeynote2PDF-contrib.xml,
+ OSGI-INF/keynote-preview-tab-config.xml,
+ OSGI-INF/ZippedKeynoteToPDFEventHandler.xml
 Bundle-SymbolicName: nuxeo-keynote
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

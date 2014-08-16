@@ -61,8 +61,12 @@
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-convert</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-event</artifactId>
+    </dependency>
   </dependencies>
-<build>
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
