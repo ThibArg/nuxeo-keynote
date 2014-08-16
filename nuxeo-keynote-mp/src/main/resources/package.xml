@@ -22,6 +22,7 @@
     <platform>cap-@VERSION@</platform>
     <platform>cap-5.8</platform>
     <platform>cap-5.9.4</platform>
+    <platform>cap-5.9.5</platform>
   </platforms>
   <!-- Dependencies on other packages -->
   <!-- <dependencies> -->

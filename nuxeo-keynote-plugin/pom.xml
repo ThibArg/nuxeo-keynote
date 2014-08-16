@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.nuxeo.keynote</groupId>
     <artifactId>nuxeo-keynote-parent</artifactId>
-    <version>5.9.5-SNAPSHOT</version>
+    <version>5.9.6-SNAPSHOT</version>
   </parent>
   <groupId>org.nuxeo.keynote</groupId>
   <artifactId>nuxeo-keynote-plugin</artifactId>
-  <version>5.9.5-SNAPSHOT</version>
+  <version>5.9.6-SNAPSHOT</version>
   <name>nuxeo-keynote-plugin</name>
   <description/>
   <dependencies>
@@ -64,6 +64,41 @@
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core-event</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.runtime</groupId>
+      <artifactId>nuxeo-runtime-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-types-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-url-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
