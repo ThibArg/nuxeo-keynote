@@ -113,7 +113,6 @@ Let's explain both ways of doing it:
     * Create a new ["XML Extension"](http://doc.nuxeo.com/display/NXDOC/Contributing+to+an+Extension+Using+Nuxeo+Studio)
     * Name it, for example "disableDefaultKn2PdfEventHandler"
     * You need to add `enabled="false"` to the listener. Here is the full XML to add in Studio:
-
 ``` xml
 <require>org.nuxeo.keynote.listener.contrib.ZippedKeynoteToPDFEventHandler</require>
 <extension
@@ -125,14 +124,14 @@ Let's explain both ways of doing it:
   </listener>
 </extension>
 ```
-
-  * Install an Event Handler(See [Studio documentation](http://doc.nuxeo.com/display/Studio/Event+Handlers))
+* (Handle Everything Manually in Studio)
+  * Install an Event Handler
     * For the `Document Created` and `Document Modified` events
     * Check the `Asynchronous` box. This is recommended because the conversion can take time (huge presentation for example) and we don't want to lock the user.
     * Only if the document is `Mutable Document`
     * And for any document having the `KeynoteAsPDF` schema
       * This way, you don't have to manually select `File`, `MyCustomDocType`, etc.
-      * Add `#{currentDocument.hasSchema("KeynoteAsPDF")} to the `Custom EL expression` field
+      * Add `#{currentDocument.hasSchema("KeynoteAsPDF")}` to the `Custom EL expression` field
     * Then select the chain to run, for example `ZippedKeynote_onDocCreatedModified`
 
   * This `ZippedKeynote_onDocCreatedModified` chain is quite simple, it just calls the `HandleZippedKeynoteInDocument` operation:
@@ -168,11 +167,11 @@ So:
     * Now, add other rows, other widgets, etc.
   * In the "Enablement" tab
     * We want to display this tab only if current document has pdf containing a Keynote presentation
-    * So, we fill the "Custom EL Expression" with this expression: `#{currentDocument.hasFacet("ZippedKeynote")}`      
+    * So, we fill the "Custom EL Expression" with `#{currentDocument.hasFacet("ZippedKeynote")}`      
   * (save)
 * Disable the "Keynote Preview" tab provided by the plug-in
   * Create a new ["XML Extension"](http://doc.nuxeo.com/display/NXDOC/Contributing+to+an+Extension+Using+Nuxeo+Studio)
-  * Name it for example "hideNativeKeynotePreviewTab"
+  * Name it for example "hideNativeKeynotePreviewTab`
   * in the xml we must (1) `require` the component (so we are sure to override it) and (2) disable the action (reminder: Any UI element in nueo is called an _action_). So the XML is:
 
 ``` xml
