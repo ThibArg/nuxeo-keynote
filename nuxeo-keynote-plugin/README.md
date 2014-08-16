@@ -75,7 +75,6 @@ See below how to disable the "Keynote Preview" tab, disable the event handler, u
 **IMPORTANT**: We are explaining how to configure your project using Nuxeo Studio.
 
 #### 
-Say we want to handle zipped Keynote presentations stored in `File` documents (To handle other document types, see below "Handling Custom Document Types.) and display the preview in a Tab.
 
 #### Handle Custom Document Types
 In Studio:
