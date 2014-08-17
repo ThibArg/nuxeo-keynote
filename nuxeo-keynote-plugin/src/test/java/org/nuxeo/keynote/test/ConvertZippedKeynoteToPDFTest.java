@@ -66,6 +66,5 @@ public class ConvertZippedKeynoteToPDFTest {
         zipFileBlob.setMimeType("application/zip");
         zkn2pdf = new ZippedKeynoteToPDFUtils(zipFileBlob);
         Assert.assertFalse(zkn2pdf.isZippedKeynote());
-
     }
 }

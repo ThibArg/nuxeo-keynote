@@ -17,6 +17,8 @@
 package org.nuxeo.keynote;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +37,13 @@ import org.nuxeo.ecm.core.convert.cache.SimpleCachableBlobHolder;
 import org.nuxeo.ecm.platform.commandline.executor.api.CmdParameters;
 import org.nuxeo.ecm.platform.convert.plugins.CommandLineBasedConverter;
 import org.nuxeo.runtime.api.Framework;
+
+
+
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /*  This class is called by the converter, as declared in the
  *  zippedKeynote2PDF-contrib.xml contribution. The command line
@@ -91,6 +100,71 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
         */
     }
 
+    /**
+     * Just checking if the file starts with %PDF.
+     * If it is the case, it does not make sure the pdf is
+     * well formated, complete, etc. etc.
+     *
+     * @since 5.9.5
+     * @param inFile
+     * @return boolean
+     */
+    protected boolean looksLikePdf(File inFile) {
+        boolean startsWithCorrectTag = false;
+        try {
+            byte[] buffer = new byte[4];
+            InputStream is = new FileInputStream(inFile);
+            if (is.read(buffer) != buffer.length) {
+                startsWithCorrectTag = false;
+            } else if(   buffer[0] != 0x25 // %
+                      || buffer[1] != 0x50 // P
+                      || buffer[2] != 0x44 // D
+                      || buffer[3] != 0x46)// F
+            {
+                startsWithCorrectTag = false;
+                // So we have an error => let's log this error
+                java.nio.file.Path path = Paths.get(inFile.getPath());
+                log.error("nodejs server error:\n" + Files.readAllLines(path, StandardCharsets.UTF_8));
+
+            } else {
+                startsWithCorrectTag = true;
+            }
+            is.close();
+
+        } catch (Exception e) {
+            //FileNotFoundException, IOException
+            log.error("Cannot read received pdf", e);
+            startsWithCorrectTag = false;
+        }
+
+        return startsWithCorrectTag;
+    }
+
+    /**
+     * In our context:
+     *  - We have only one file
+     *  - The distant nodejs server can fail converting the presentation.
+     *    In that case, it returns a text error, and curl (on our side)
+     *    just output it in the file, which is supposed to be a pdf. So,
+     *    we now have a file, identified as pdf but is not a pdf, so it
+     *    will lead to errors later (fulltext extraction, preview, ...)
+     *
+     *    So.
+     *
+     *    We should change the whole converter, and use something else than
+     *    a commandline convertor. We should handle the connection, send
+     *    request, get back the pdf ourselves, so we can handle errors,
+     *    headers, etc.
+     *
+     *    Waiting for that (this is a joke, right?), lets just check the
+     *    file and return null it it's not a pdf. This may break something
+     *    in the call chain. In our plug-in, no error will be thrown and
+     *    the document will just not have the "ZippedKeynote" facet and no
+     *    pdf in the kn2pdf schema. So we can say that if the nodejs server
+     *    returns an error, our plugin wil fail silently.
+     *    Which may be not good, but it's better than having a file handled
+     *    as a pdf whihc is not a pdf.
+     */
     @Override
     protected BlobHolder buildResult(List<String> cmdOutput, CmdParameters cmdParams) {
 
@@ -99,12 +173,23 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
         File[] files = outputDir.listFiles();
         List<Blob> blobs = new ArrayList<Blob>();
 
+        boolean allGood = true;
         for (File file : files) {
-            Blob blob = new FileBlob(file);
-            blob.setFilename(file.getName());
-            blobs.add(blob);
+            Blob blob = null;
+            if(looksLikePdf(file)) {
+                blob = new FileBlob(file);
+                blob.setFilename(file.getName());
+                blobs.add(blob);
+            } else {
+                allGood = false;
+                break;
+            }
         }
-        return new SimpleCachableBlobHolder(blobs);
+        if(allGood) {
+            return new SimpleCachableBlobHolder(blobs);
+        } else {
+            return null;
+        }
     }
 
     @Override
