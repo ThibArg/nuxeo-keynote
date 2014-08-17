@@ -26,16 +26,17 @@ import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 /**
  * We do something only:
  *      - If the document is mutable,
- *      - And for the events
- *      - and the doc. type defined in the extension point
- *        (seeZippedKeynoteToPDFEventHandler.xml)
+ *      - And for the events and the doc. type defined in the extension
+ *        point (seeZippedKeynoteToPDFEventHandler.xml)
  *
  *   => We do not re-check these events/doctypes here.
+ *      This allows contribution tot he same point, so a nuxeo developper
+ *      can add custom document types to the handler for example, and/or
+ *      remove the File doc. type from being handled, etc.
  *
- * We also assume the event we receive is a DocumentEventContext
- * event
+ * We also assume the event we receive is a DocumentEventContext event.
  *
- * Last but nt least, the default configuration installs this handler
+ * Last but not least, The default configuration installs this handler
  * for "File" and "documentCreated", "documentModified". So it will
  * be called for every document of type "File", no exception. See
  * the README file to learn how to change this behavior.

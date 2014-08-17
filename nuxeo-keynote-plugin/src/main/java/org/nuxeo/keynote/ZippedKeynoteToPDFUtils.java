@@ -30,6 +30,17 @@ import org.nuxeo.ecm.core.api.blobholder.SimpleBlobHolder;
 import org.nuxeo.ecm.core.convert.api.ConversionService;
 import org.nuxeo.runtime.api.Framework;
 
+/**
+ * A utility, to be reused elsewhere in the code.
+ * <p>
+ * Basically, contains a utility (isZippedKeynote)which checks if a blob contains
+ * a zip file which itself contains a Keynote presentation, and another (convert)
+ * which, well, converts this blo and returns a pdf
+ *      -
+ * @author Thibaud Arguillere
+ *
+ * @since 5.9.5
+ */
 public class ZippedKeynoteToPDFUtils {
 
     public static final Log log = LogFactory.getLog(ZippedKeynoteToPDFUtils.class);
@@ -58,15 +69,17 @@ public class ZippedKeynoteToPDFUtils {
             ZipEntry zentry = null;
             String name;
 
-            // We are reading from a stream, not a file, so we can't make sure
-            // it reads the "first" file, and can't rely on the fact that the
-            // "zip contains a Keynote file if one of the 2 first elements
-            // is a .key file (second can be a __MACOS folder).
-            // The workaround i to find an item which:
-            //      -> Is a directory
-            //      -> Ends with .key/
-            //      -> And contains one signle / (just in case the Keynote format
-            //         contain sub-.key files. Never seen that, but who knows)
+            /* We are reading from a stream, not a file, so we can't make sure
+             * it reads the "first" file, and can't rely on the fact that the
+             * "zip contains a Keynote file if one of the 2 first elements
+             * is a .key file (second can be a __MACOS folder).
+             * The workaround is to find an item which:
+             *      -> Is a directory (a Keynote presentation is a directory)
+             *      -> The name ends with .key/
+             *      -> And it contains one single "/" (just in case the Keynote
+             *         format contains sub-.key files. Never seen that, but who
+             *         knows and it is easy to test, not impacting performance)
+             */
             do {
                 zentry = zis.getNextEntry();
                 if(zentry != null) {

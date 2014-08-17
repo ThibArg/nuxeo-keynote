@@ -43,7 +43,7 @@ import org.nuxeo.runtime.api.Framework;
  *  curl --upload-file #{sourceFilePath} #{nodeServerUrl} -o #{targetFilePath}
  *
  *  The only parameter the caller must provide is a targetFileName (that will
- *  be used to build targetFilePath). But targetFileName is optionnal (we
+ *  be used to build targetFilePath). But targetFileName is optional (we
  *  provide a random name if needed)
  */
 public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
@@ -73,7 +73,7 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
         /*
         *  We wanted to check the availability of the server once for all.
         *  But after all, it's ok for the distant Mac/nodejs server to be started later,
-        *  so we comment this part.
+        *  after this class is initialized. so we comment this part.
         */
         /*
         if(configParamsAreOk) {

@@ -28,7 +28,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 /**
  * @author Thibaud Arguillere
  */
-@Operation(id=HandleZippedKeynoteInDocumentOp.ID, category=Constants.CAT_DOCUMENT, label="Handle zipped Keynote in document", description="<p>Check if <code>file:content</code> is a zip file. If yes, check if it contains a .key file. If yes, convert this Keynote presentation to pdf, and stores the pdf in the <code>knpdf:content</code> field.</p>")
+@Operation(id=HandleZippedKeynoteInDocumentOp.ID, category=Constants.CAT_DOCUMENT, label="Handle zipped Keynote in document", description="<p>Check if <code>file:content</code> is a zip file. If yes, check if it contains a .key package. If yes, convert this Keynote presentation to pdf, stores the pdf in the <code>knpdf:content</code> field, and set the <code>ZippedKeynote</code> facet</p>")
 public class HandleZippedKeynoteInDocumentOp {
 
     public static final String ID = "HandleZippedKeynoteInDocument";

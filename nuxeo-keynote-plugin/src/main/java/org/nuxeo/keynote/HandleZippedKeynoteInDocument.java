@@ -26,10 +26,7 @@ import org.nuxeo.ecm.core.api.blobholder.BlobHolder;
 /**
  * @author Thibaud Arguillere
  *
- * When blob etc. etc. => talk about the usage of the "ZippedKeynote" facet
- *      -> Mainly, to be used in a EL to show/hide a button for example,
- *
- * Explain the KeynoteAsPDF schema
+ * See the README file and the comments below
  *
  * Direct access from a GET call:
  * http://{server}:{port}/nuxeo/nxfile/default/{docId}/knpdf:content/{fileName}

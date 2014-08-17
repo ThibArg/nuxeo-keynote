@@ -26,7 +26,7 @@ import org.nuxeo.ecm.core.api.Blob;
 /**
  * @author Thibaud Arguillere
  */
-@Operation(id=ConvertZippedKeynoteToPDFOp.ID, category=Constants.CAT_CONVERSION, label="Convert Zipped Keynote to PDF", description="<p>This operation receives a blob which a zip file containing a Keynote presentaiton (<code>.key</code> extension). It returns a pdf after conversion by Keynote.</p>")
+@Operation(id=ConvertZippedKeynoteToPDFOp.ID, category=Constants.CAT_CONVERSION, label="Convert Zipped Keynote to PDF", description="<p>This operation receives a blob which is a zip file containing a Keynote presentaiton (<code>.key</code> extension). It returns a pdf after conversion by Keynote.</p>")
 public class ConvertZippedKeynoteToPDFOp {
 
     public static final String ID = "ConvertZippedKeynoteToPDF";

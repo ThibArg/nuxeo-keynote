@@ -16,6 +16,16 @@
  */
 package org.nuxeo.keynote;
 
+/**
+ * Constants used in this bundle.
+ * <p>
+ * WARNING: These constants must match the values set in
+ * the xml extension
+ *
+ * @author Thibaud Arguillere
+ *
+ * @since 5.9.5
+ */
 public class ZippedKeynoteToPDFConstants {
     // WARNING: All these *MUST* match zippedKeynote2PDF.xml
     public static final String FACET = "ZippedKeynote";
