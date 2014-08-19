@@ -20,41 +20,41 @@ package org.nuxeo.keynote;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.event.Event;
-import org.nuxeo.ecm.core.event.EventListener;
+import org.nuxeo.ecm.core.event.EventBundle;
+import org.nuxeo.ecm.core.event.PostCommitEventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 
 /**
- * We do something only:
- *      - If the document is mutable,
- *      - And for the events and the doc. type defined in the extension
- *        point (seeZippedKeynoteToPDFEventHandler.xml)
- *
- *   => We do not re-check these events/doctypes here.
- *      This allows contribution tot he same point, so a nuxeo developper
- *      can add custom document types to the handler for example, and/or
- *      remove the File doc. type from being handled, etc.
- *
- * We also assume the event we receive is a DocumentEventContext event.
- *
- * Last but not least, The default configuration installs this handler
- * for "File" and "documentCreated", "documentModified". So it will
- * be called for every document of type "File", no exception. See
- * the README file to learn how to change this behavior.
  *
  * @author Thibaud Arguillere
  */
-public class ZippedKeynoteToPDFEventHandler implements EventListener {
+public class ZippedKeynoteToPDFEventHandler implements PostCommitEventListener {
 
+    //public static final Log log = LogFactory.getLog(ZippedKeynoteToPDFEventHandler.class);
+
+    /*
+     * Because we run asynchronously, we must check the document. For example,
+     * it could have been deleted after the event was pushed in the event stack
+     * but before we are actually called.
+     *
+     * IMPORTANT: WE DON'T CHECK THE KIND OF EVENT, which by default can be
+     * documentCreated or documentModified. This allows more flexibility if the
+     * developer wants to override this and adds other events
+     */
     @Override
-    public void handleEvent(Event event) throws ClientException {
+    public void handleEvent(EventBundle bundle) throws ClientException {
+        for (Event theEvent : bundle) {
+            if(theEvent.getContext() instanceof DocumentEventContext) {
+                DocumentEventContext docCtx = (DocumentEventContext) theEvent.getContext();
+                DocumentModel doc = docCtx.getSourceDocument();
 
-        DocumentEventContext docCtx = (DocumentEventContext) event.getContext();
-        DocumentModel doc = docCtx.getSourceDocument();
-        if (!doc.isImmutable()) {
-            try {
-                HandleZippedKeynoteInDocument.run(doc, event.getContext().getCoreSession());
-            } catch (Exception e) {
-                throw new ClientException(e);
+                if(doc != null && !doc.isImmutable()) {
+                    try {
+                        HandleZippedKeynoteInDocument.run(doc, docCtx.getCoreSession());
+                    } catch (Exception e) {
+                        throw new ClientException(e);
+                    }
+                }
             }
         }
     }
