@@ -54,7 +54,7 @@
 		/just_checking
 			As its name state. Returns 200 and "All is good" if, well, all is good
 
-		/ and the zip file
+		/convert/ and the zip file
 
 	* That's all. The nuxeo-keynote plug-in does a curl call to get the pdf:
 		curl --upload-file #{sourceFilePath} #{nodeServerUrl} -o #{targetFilePath}
@@ -94,20 +94,42 @@ if(gConfig == null) {
 }
 console.log("...Configuration: \n" + util.inspect(gConfig) + "\n");
 
+// Prepare the keynote2pdf config
+var gKn2pdfConfig = {};
+if("cleanup_timeout" in gConfig) {
+	gKn2pdfConfig.cleanup_timeout = gConfig.cleanup_timeout;
+}
+if("max_lifespan" in gConfig) {
+	gKn2pdfConfig.max_lifespan = gConfig.max_lifespan;
+}
+if("debug" in gConfig) {
+	gKn2pdfConfig.debug = gConfig.debug;
+}
+keynote2pdf.initSync(gKn2pdfConfig);
+
 // -> Create and start the server
 console.log("Start server...");
 http.createServer(function(request, response) {
 	var theUid,
 		destZipFile,
-		destFileStream;
+		destFileStream,
+		doConvert = false;
 
 	// Dispatch the request
-	if(request.url == "/just_checking") {
+	if(request.url === "/just_checking") {
 		// Nothing more. We're alive
-		logIfDebug("just_checking -> We're alive, aren't we?");
+		console.log("just_checking -> We're alive, aren't we?");
 		response.writeHead(200, {'Content-Type': 'text/plain'});
 		response.end("All is good");
+	} else if(request.url/indexOf("/convert/") === 0){
+		doConvert = true;
 	} else {
+		// We reject any other requests with as few info as possible
+		response.writeHead(200);
+		response.end();
+	}
+
+	if(doConvert) {
 	// Get the file sent by the client, save it in the temp folder with a unique name
 		destZipFile = gDestTempFolder + uuid.v4() + ".zip";
 		destFileStream = fs.createWriteStream(destZipFile);

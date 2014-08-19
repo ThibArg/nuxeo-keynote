@@ -51,6 +51,9 @@ import java.nio.file.Paths;
  *  XML, we will forget to change it here...):
  *  curl --upload-file #{sourceFilePath} #{nodeServerUrl} -o #{targetFilePath}
  *
+ *  Actually, to convert, the url is server:port/convert. We add this "convert"
+ *  in the call
+ *
  *  The only parameter the caller must provide is a targetFileName (that will
  *  be used to build targetFilePath). But targetFileName is optional (we
  *  provide a random name if needed)
@@ -237,7 +240,7 @@ public class ZippedKeynoteToPDFConverter extends CommandLineBasedConverter {
         cmdStringParams.put("targetFilePath",
                 outDir.getAbsolutePath() + System.getProperty("file.separator") + targetFileName);
 
-        cmdStringParams.put("nodeServerUrl", kKEYNOTE2PDF_NODEJS_SERVER_URL);
+        cmdStringParams.put("nodeServerUrl", kKEYNOTE2PDF_NODEJS_SERVER_URL + "/convert/");
 
         return cmdStringParams;
     }

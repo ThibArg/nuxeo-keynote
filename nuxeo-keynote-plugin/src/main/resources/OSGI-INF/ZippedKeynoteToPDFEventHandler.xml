@@ -3,7 +3,7 @@
   <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
     point="listener">
 
-    <listener name="zippedkeynotetopdfeventhandler" async="true" postCommit="true"
+    <listener name="zippedkeynotetopdfeventhandler" async="true" postCommit="false"
       class="org.nuxeo.keynote.ZippedKeynoteToPDFEventHandler" order="100">
       <event>documentCreated</event>
       <event>documentModified</event>
