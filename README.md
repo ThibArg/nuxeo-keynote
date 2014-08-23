@@ -14,7 +14,7 @@ Assuming maven 3.2.1 is correctly setup on your computer:
     # (but using the MP makes things way easier for installation, de-installation server side)
 
 ### Details and Explanations
-See the README file of `nuxeo-keynote-plugin`.
+See the [README file](https://github.com/ThibArg/nuxeo-keynote/blob/master/nuxeo-keynote-plugin/README.md) of `nuxeo-keynote-plugin`.
 
 ### License
 (C) Copyright 2014 Nuxeo SA (http://nuxeo.com/) and others.
