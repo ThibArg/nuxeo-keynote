@@ -7,7 +7,7 @@ This [nuxeo](http://nuxeo.com) plug-in handles a zipped Keynote file, converts i
 * [Main Principles](#main-principles)
 * [Using the Plug-in: What You Have to Do](#using-the-plug-in-what-you-have-to-do)
 * [Customization](#customization)
-* [Handling Custom Document Types](#handling-custom-document-types)
+* [Adding the `KeynoteAsPDF` Schema to the Studio Registry](#adding-the-Keynoteaspdf-schema-to-the-studio-registry)
 * [Trouble Shooting](#trouble-shooting)
 * [License](#license)
 * [About Nuxeo](#about-nuxeo)
@@ -23,7 +23,7 @@ The plug-in provides tools, operations and a tab to handle the conversion (to PD
 * A server is up and running "somewhere":
   * On a Mac
   * With Keynote installed
-  * We use a nodejs server for this purpose (see the "nuxeo-keynote-nodejs-server.js" file)
+  * We use a nodejs server for this purpose (see the `nuxeo-keynote-nodejs-server.js` file in `src / main / resources / nodejs-server`)
 * The plug-in:
   * _(see the xml contributions)_
   * Declares/install some elements:
@@ -32,11 +32,9 @@ The plug-in provides tools, operations and a tab to handle the conversion (to PD
       * This schema is added to the `File`  document type
     * A `zippedKeynoteToPDF` command line tool which uses `curl` to connect to the conversion server
     * A `zippedKeynoteToPDF` converter which uses this command line
-  * Install an event handler
-    * For `documentCreated` and `documentModified`,
-    * And only for `File` documents
+  * Installs an event handler
+    * For `documentCreated` and `documentModified`
     * This handler does the same thing as the `HandleZippedKeynoteInDocument` operation (see below)
-  * Install a `Keynote Preview` tab, displayed only if the current document has the `ZippedKeynote` facet
   * Provides two operations:
     * `ConvertZippedKeynoteToPDF` just receives a blob, calls the service for conversion, returns the pdf
     * `HandleZippedKeynoteInDocument` receives a `Document` and:
@@ -48,12 +46,13 @@ The plug-in provides tools, operations and a tab to handle the conversion (to PD
       * If it not a zip, or if the zip does not contain a Keynote presentation, or there is no blob, etc., then the plug-in:
         * Removes the `ZippedKeynote` facet (or does nothing if the document did not have this facet)
         * Cleans up the `KeynoteAsPDF` schema
-    * Provides the `pdf_using_pdfjs.xhtml` widget template which
+  * Provides the `pdf_using_pdfjs.xhtml` widget template which
       * Uses pdf.js
       * And displays the pdf stored in the `knpdf:content` field
+  * Installs a `Keynote Preview` tab, displayed only if the current document has the `ZippedKeynote` facet. This tab uses the `pdf_using_pdfjs.xhtml` widget. 
 * Optimizations:
   * Native caching by the converter service: This avoids the exact same file will not be converted twice in the same session.
-  * A specific field in the `KeynoteAsPDF` lets the plug-in to detect if the zip has already been handled, to avoid unzipping it, searching if it is a zipped keynote presentation
+  * A specific field in the `KeynoteAsPDF` lets the plug-in to detect if the zip has already been handled, to avoid unzipping it, searching if it is a zipped keynote presentation, etc.
 
 ## Using the Plug-in: What You Have to Do
 Basically nothing special unless you want to/have to:
@@ -72,16 +71,14 @@ See below how to disable the "Keynote Preview" tab, disable the event handler, u
   ```
 
 ### Customization
-**IMPORTANT**: We are explaining how to configure your project using Nuxeo Studio.
+**IMPORTANT**: We are explaining how to configure your project using [Nuxeo Studio](http://www.nuxeo.com/products/studio/).
 
-#### 
-
-#### Handle Custom Document Types
+#### Using Custom Document Types
 In Studio:
 * Define your document type
   * Remember it must have the `file` _and_ the `KeynoteAsPDF` schemas
   * The easiest way to achieve this to extends the `File` document. Because the plug-in automatically adds this `KeynoteAsPDF` schema fo the `File` document type, extending this type will make everyting ok.
-  * If you don't extend `File`, then you must add the `KeynoteAsPDF` schema to the Studio registry and then use this schema in the document type definition. See "Handling Custom Document Types" below.
+  * If you don't extend `File`, then you must add the `KeynoteAsPDF` schema to the Studio registry and then use this schema in the document type definition. See "Adding the `KeynoteAsPDF` to the Studio Registry" below.
 * You must now use the plug-in to check the content, see if it is a .zip, see if it is a zipped keynote, etc.. You can achieve this in 2 different ways:
   * Override (contribute) the default listener as declared by the plug-in
   * Handle everything manually in an event handler. This may be useful if, for example, you have some specific things to do when the document is crated/modified
@@ -190,7 +187,7 @@ So:
   * If you created the document using the "New" button, you will not see the "Keynote Preview" tabe, because the event is asynchronous and the UI is not refreshed. Just reload the page
 * If you open/create/modify a `File` you will see that the tab is displayed only if the main file is a zip and this zip contains a Keynote presentation.
 
-## Handling Custom Document Types
+## Adding the `KeynoteAsPDF` Schema to the Studio Registry
 The plug-in installs its behavior for `File` documents. If you want/need to create custom document types which can contain zipped Keynote presentations then you can (in Studio):
 
 * Add the `KeynoteAsPDF` schema to the Studio registry. Here is the schema for the registry:
