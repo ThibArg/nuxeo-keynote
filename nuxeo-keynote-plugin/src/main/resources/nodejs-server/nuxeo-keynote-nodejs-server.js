@@ -115,6 +115,8 @@ http.createServer(function(request, response) {
 		destFileStream,
 		doConvert = false;
 
+console.log(request.url);
+
 	// Dispatch the request
 	if(request.url === "/just_checking") {
 		// Nothing more. We're alive

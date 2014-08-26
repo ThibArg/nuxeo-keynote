@@ -16,7 +16,7 @@
     <module>nuxeo-keynote-mp</module>
   </modules>
   <properties>
-    <nuxeo.keynote.version>5.9.5-SNAPSHOT</nuxeo.keynote.version>
+    <nuxeo.keynote.version>5.9.6-SNAPSHOT</nuxeo.keynote.version>
   </properties>
   <dependencyManagement>
     <dependencies>
