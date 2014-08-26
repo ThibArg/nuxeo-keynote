@@ -121,7 +121,7 @@ http.createServer(function(request, response) {
 		console.log("just_checking -> We're alive, aren't we?");
 		response.writeHead(200, {'Content-Type': 'text/plain'});
 		response.end("All is good");
-	} else if(request.url/indexOf("/convert/") === 0){
+	} else if(request.url.indexOf("/convert/") === 0){
 		doConvert = true;
 	} else {
 		// We reject any other requests with as few info as possible
